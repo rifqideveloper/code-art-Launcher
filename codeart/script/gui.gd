@@ -21,8 +21,11 @@ func _app_list_update() -> void :
 		v.queue_free()
 	for i in app_list :
 		var v : Node = app.instance()
+		print("list",i)
+		#v.nama = i[0]
+		#v.link = i[1]
 		v.data = {
-			"name":i[0]
+			"nama":i[0]
 			,"link":i[1]
 		}
 		v.connect("ke_app_halaman",self,"_ke_app_halaman")

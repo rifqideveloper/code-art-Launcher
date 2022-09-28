@@ -23,4 +23,5 @@ func _buat_halaman_app(data:Dictionary) -> void :
 	_segarkan()
 	var v :Node= load("res://codeart/scene/app_halaman.tscn").instance()
 	v.link = data["link"]
+	v.nama = data["nama"]
 	$VBoxContainer.add_child(v)

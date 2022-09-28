@@ -12,7 +12,10 @@ enum _state {
 export (_state) var state : int = _state.siap
 
 func _ready():
-	pass
+	
+	if !File.new().file_exists($"../../..".nama) :
+		state = _state.belum_di_download
+	
 
 func _physics_process(delta) -> void:
 	if state == _state.siap :
@@ -39,7 +42,7 @@ func _update() -> void :
 
 func _on_play_pressed():
 	if state == _state.belum_di_download or state == _state.belum_di_update:
-		 _update()
+		_update()
 	state = _state.looding
 	if File.new().file_exists($"../../..".link):
 		var v : Node = load("res://codeart/scene/game.tscn").instance()
