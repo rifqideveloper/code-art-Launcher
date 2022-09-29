@@ -1,8 +1,8 @@
 extends Node2D
 
 onready var _request : Node = $HTTPRequest
-var app_link_ : Array = [
-	"user://game","free person shooter","https://rifqideveloper.github.io/code-art-studio.github.io/data/Free%20Person%20shooter.pck"
+var app_link_ : PoolStringArray = [
+	"user://game","free person shooter","https://rifqideveloper.github.io/code-art-Launcher/data/Free%20Person%20shooter.pck"
 ]
 var download_mulai : bool = false
 
