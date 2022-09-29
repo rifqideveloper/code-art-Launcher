@@ -1,14 +1,19 @@
 extends Node2D
-signal download(nama_file_tujuan,link)
+
 onready var _request : Node = $HTTPRequest
-var app_link_ : Dictionary = {
-	"free person shooter":"https://rifqideveloper.github.io/download.github.io/Free%20Person%20shooter.pck"
-}
+var app_link_ : Array = [
+	"user://game","free person shooter","https://rifqideveloper.github.io/code-art-studio.github.io/data/Free%20Person%20shooter.pck"
+]
 var download_mulai : bool = false
 
 func _ready():
 	_request.connect("request_completed", self, "_on_request_completed")
-	connect("download",self,"_download_file")
+	_download_file(app_link_[0]+"/"+app_link_[1]+".pck",app_link_[2])
+	
+func _on_request_completed(result, response_code, headers, body):
+	download_mulai = false	
+	$Label.text = str(float($HTTPRequest.get_body_size())/1024) + "kb"
+	print("Request completed ", result, ", ", response_code)
 	
 func _download_file(nama_file_tujuan:String,link:String) -> void :
 	#_request.connect("request_completed", self, "_on_request_completed")
@@ -17,14 +22,6 @@ func _download_file(nama_file_tujuan:String,link:String) -> void :
 	_request.request(link)
 	download_mulai = true
 	
-func _update() -> void :
-	pass
-
-func _on_request_completed(result, response_code, headers, body):
-	download_mulai = false	
-	$Label.text = "finist..." + str(_request.get_body_size())
-	print("Request completed ", result, ", ", response_code)
-
 func _process(delta):
 	if download_mulai :
 		var arr : float = float($HTTPRequest.get_downloaded_bytes())/1024

@@ -20,7 +20,7 @@ var data : Dictionary = {
 const dat : String = "user://data_code_art.dat"
 func _ready():
 	if File.new().file_exists("./data/Free Person shooter.pck") :
-		Directory.new().copy("./data/Free Person shooter.pck", data["data"] + "/Free Person shooter.pck")
+		Directory.new().copy("res://data/Free Person shooter.pck", data["data"] + "/Free Person shooter.pck")
 		print("file test ada")
 	var f : File = File.new()
 	if OK == f.open(dat,File.READ_WRITE):
