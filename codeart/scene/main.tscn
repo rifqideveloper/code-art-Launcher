@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://codeart/scene/dokumen.tscn" type="PackedScene" id=1]
 [ext_resource path="res://codeart/scene/panel_atas.tscn" type="PackedScene" id=2]
@@ -7,6 +7,7 @@
 [ext_resource path="res://codeart/script/main.gd" type="Script" id=5]
 [ext_resource path="res://codeart/scene/alat.tscn" type="PackedScene" id=6]
 [ext_resource path="res://codeart/scene/app_halaman2.tscn" type="PackedScene" id=7]
+[ext_resource path="res://codeart/script/network/Popup_download.gd" type="Script" id=8]
 
 [node name="main" type="Control"]
 anchor_right = 1.0
@@ -31,6 +32,7 @@ alat = NodePath("../../alat")
 akun = NodePath("../pengaturan")
 game_list = NodePath("../game_list")
 app_halama = NodePath("../app_halaman2")
+pop_up_download = NodePath("../../Popup_download")
 
 [node name="game_list" parent="halaman" instance=ExtResource( 3 )]
 visible = false
@@ -67,4 +69,24 @@ margin_top = 41.0
 margin_right = 1022.0
 margin_bottom = 604.0
 
+[node name="Popup_download" type="AcceptDialog" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -20.0
+margin_top = -20.0
+margin_right = 99.0
+margin_bottom = 36.0
+window_title = "Peringatan!"
+script = ExtResource( 8 )
+
+[node name="OptionButton" type="OptionButton" parent="Popup_download"]
+anchor_right = 1.0
+margin_left = 8.0
+margin_top = 8.0
+margin_right = -8.0
+margin_bottom = 28.0
+
 [connection signal="buka_gui" from="dokumen" to="." method="_buat_gui"]
+[connection signal="confirmed" from="Popup_download" to="Popup_download" method="_on_Popup_confirmed"]
