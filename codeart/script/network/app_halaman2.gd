@@ -20,21 +20,11 @@ enum states {
 export(states) var state : int = states.play_update
 
 func _ready() -> void :
-	$background/nama.text = nama
-	$background/download2.app_link_[0] = user_date
-	$background/download2.app_link_[1] = nama
-	$background/download2.app_link_[2] = link
-	state = states.cek_update 
-	$background/download2._checksum(user_date + "/" + nama +".pck",link_sha256) 
-
-	if !icon.empty() :
-		pass
-	if !backgroun.empty():
-		pass
+	pass
 	
 func _chechsum_selesai(hasil:bool) -> void :
 	if hasil : 
-		_update_selesai(state == states.play_update)
+		_update_selesai(true)
 	else :
 		state = states.play_update
 
@@ -58,21 +48,29 @@ func _update_selesai(play:bool) -> void :
 		v.link = user_date + "/" + nama +".pck"
 		add_child(v)
 	else :
-		state = states.play		
+		state = states.play_update		
 
 func _on_play_pressed():
-	print(state)
-	match state :
-		states.play_update , states.play:
-			print("_on_play_pressed")
-			#cek update
-			if !nama.empty() :
-				state = states.play_update
-				$background/download2._checksum(user_date + "/" + nama +".pck",link_sha256) 
-				
-				#$background/download2.emit_signal("update",true)
+	#$background/download3._jalankan($background/download3.state.download_update)
+	pass	
 export (NodePath) var kembali : NodePath
 func _on_kembali_pressed():
 	get_node(kembali).visible = true
 	visible = false
-	
+
+func _on_app_halaman2_visibility_changed():
+	if visible :
+		$background/download_4.mulai = false	
+		$background/download_4.user_date = user_date
+		$background/download_4.nama = nama
+		$background/download_4.sha256 = link_sha256
+		$background/download_4.pck = link
+		#$background/download3.sha = user_date + "/" + nama + ".sha256"
+		#$background/download3.sha_link = link_sha256
+		#$background/download3.pck = user_date + "/" + nama + ".pck"
+		#$background/download3.pck_link = link
+		#$background/download3._jalankan($background/download3.state.download_sha)
+		#if !icon.empty() :
+		#	pass
+		#if !backgroun.empty():
+		#	pass

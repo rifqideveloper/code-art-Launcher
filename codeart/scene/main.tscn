@@ -35,17 +35,15 @@ app_halama = NodePath("../app_halaman2")
 pop_up_download = NodePath("../../Popup_download")
 
 [node name="game_list" parent="halaman" instance=ExtResource( 3 )]
-visible = false
 margin_top = 42.0
 margin_right = 1020.0
-margin_bottom = 596.0
-app_halaman = NodePath("../app_halaman2")
+margin_bottom = 600.0
 
 [node name="app_halaman2" parent="halaman" instance=ExtResource( 7 )]
 visible = false
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_top = 42.0
+margin_top = 323.0
 margin_right = 1020.0
 margin_bottom = 600.0
 size_flags_vertical = 3

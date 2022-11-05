@@ -1,8 +1,8 @@
 [gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://codeart/script/network/app_halaman2.gd" type="Script" id=1]
-[ext_resource path="res://codeart/scene/network/download2.tscn" type="PackedScene" id=2]
 [ext_resource path="res://codeart/icon.png" type="Texture" id=3]
+[ext_resource path="res://codeart/scene/network/download_4.tscn" type="PackedScene" id=5]
 
 [node name="app_halaman2" type="VBoxContainer"]
 anchor_right = 1.0
@@ -42,14 +42,22 @@ clip_text = true
 align = 0
 icon_align = 2
 
-[node name="download2" parent="background" instance=ExtResource( 2 )]
-position = Vector2( 80, 244 )
+[node name="download_4" parent="background" instance=ExtResource( 5 )]
+tombol = NodePath("../play")
+txt = NodePath("../info")
 
 [node name="nama" type="Label" parent="background"]
 margin_left = 80.0
 margin_top = 223.0
 margin_right = 120.0
 margin_bottom = 237.0
+text = "error"
+
+[node name="info" type="Label" parent="background"]
+margin_left = 18.0
+margin_top = 144.0
+margin_right = 58.0
+margin_bottom = 158.0
 text = "error"
 
 [node name="TabContainer" type="TabContainer" parent="."]
@@ -169,7 +177,6 @@ margin_left = 81.0
 margin_right = 81.0
 margin_bottom = 14.0
 
+[connection signal="visibility_changed" from="." to="." method="_on_app_halaman2_visibility_changed"]
 [connection signal="pressed" from="kembali" to="." method="_on_kembali_pressed"]
 [connection signal="pressed" from="background/play" to="." method="_on_play_pressed"]
-[connection signal="chechsum_selesai" from="background/download2" to="." method="_chechsum_selesai"]
-[connection signal="update_selesai" from="background/download2" to="." method="_update_selesai"]

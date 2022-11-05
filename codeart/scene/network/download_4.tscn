@@ -1,0 +1,21 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://codeart/script/network/download_4.gd" type="Script" id=1]
+
+[node name="download_4" type="Node"]
+script = ExtResource( 1 )
+
+[node name="pck" type="HTTPRequest" parent="."]
+use_threads = true
+
+[node name="sha" type="HTTPRequest" parent="."]
+use_threads = true
+
+[node name="icon" type="HTTPRequest" parent="."]
+use_threads = true
+
+[node name="background" type="HTTPRequest" parent="."]
+use_threads = true
+
+[node name="deskripsi" type="HTTPRequest" parent="."]
+use_threads = true
