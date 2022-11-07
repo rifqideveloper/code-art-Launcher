@@ -45,6 +45,7 @@ icon_align = 2
 [node name="download_4" parent="background" instance=ExtResource( 5 )]
 tombol = NodePath("../play")
 txt = NodePath("../info")
+state = 3
 
 [node name="nama" type="Label" parent="background"]
 margin_left = 80.0

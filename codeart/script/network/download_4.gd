@@ -9,6 +9,7 @@ enum states {
 	tunggu_donwload_pck
 	Null
 	error
+	offline
 }
 export(NodePath) var tombol : NodePath
 export(NodePath) var txt : NodePath
@@ -19,16 +20,38 @@ var user_date : String = "user://game"
 var nama : String = "free person shooter"
 var sha_terdownload : bool = false
 var pck_terdownload : bool = false
-var update_dimulai : bool = false
+#var update_dimulai : bool = false
 var mulai : bool = false
+#var download : bool = false
 export (states) var state : int = states.ceksum
 
 func _ready() -> void:
 	$sha.connect("request_completed",self,"_on_sha_completed")
 	$pck.connect("request_completed",self,"_on_pck_completed")
 	get_node(tombol).connect("pressed",self,"_klik")
+	
 func _process(delta) -> void:
 	match state :
+		states.offline :
+			get_node(txt).text = "offline"
+		states.donwload_sha :
+			get_node(txt).text = "cek update"
+			if File.new().file_exists(user_date + "/" + nama + ".pck") :
+				sha_terdownload = false
+				$sha.set_download_file(user_date + "/" + nama + ".sha256")
+				if $sha.request(sha256) == OK :
+					print("ok")
+				else :
+					print("error")					
+				state = states.tunggu_donwload_sha
+			else :
+				get_node(txt).text = "butuh update"
+				state = states.update
+				
+		states.tunggu_donwload_sha :
+			if sha_terdownload :
+				state = states.ceksum
+			
 		states.ceksum :
 			if _cek_sum() :
 				state = states.siap
@@ -39,6 +62,7 @@ func _process(delta) -> void:
 			else :
 				get_node(txt).text = "butuh di update"
 				state = states.update
+
 		states.siap :
 			if mulai :
 				get_node(txt).text = "loooding ... 50%"
@@ -61,6 +85,8 @@ func _process(delta) -> void:
 		states.tunggu_donwload_pck :
 			if sha_terdownload and pck_terdownload :
 				state = states.ceksum
+				sha_terdownload = false
+				pck_terdownload = false
 			else :
 				get_node(txt).text = "downloading ... " + str(float($pck.get_downloaded_bytes())/1024)+"kb /" + str(float($pck.get_body_size())/1024) + "kb"
 				

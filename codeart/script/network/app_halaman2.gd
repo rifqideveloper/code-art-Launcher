@@ -65,12 +65,4 @@ func _on_app_halaman2_visibility_changed():
 		$background/download_4.nama = nama
 		$background/download_4.sha256 = link_sha256
 		$background/download_4.pck = link
-		#$background/download3.sha = user_date + "/" + nama + ".sha256"
-		#$background/download3.sha_link = link_sha256
-		#$background/download3.pck = user_date + "/" + nama + ".pck"
-		#$background/download3.pck_link = link
-		#$background/download3._jalankan($background/download3.state.download_sha)
-		#if !icon.empty() :
-		#	pass
-		#if !backgroun.empty():
-		#	pass
+		$background/download_4.state = $background/download_4.states.donwload_sha
