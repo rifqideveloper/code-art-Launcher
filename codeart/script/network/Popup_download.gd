@@ -1,11 +1,11 @@
-extends AcceptDialog
-
+extends WindowDialog
 
 func _ready():
 	$OptionButton.add_item("window",0)
 	$OptionButton.add_item("linux",1)
 	$OptionButton.add_item("mac",2)	
 	$OptionButton.select(0)
+	$Button.connect("pressed",self,"_on_Popup_confirmed")
 
 
 func _on_Popup_confirmed():

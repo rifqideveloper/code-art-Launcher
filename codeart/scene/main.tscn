@@ -67,7 +67,7 @@ margin_top = 41.0
 margin_right = 1022.0
 margin_bottom = 604.0
 
-[node name="Popup_download" type="AcceptDialog" parent="."]
+[node name="Popup_download" type="WindowDialog" parent="."]
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -76,7 +76,6 @@ margin_left = -20.0
 margin_top = -20.0
 margin_right = 99.0
 margin_bottom = 36.0
-window_title = "Peringatan!"
 script = ExtResource( 8 )
 
 [node name="OptionButton" type="OptionButton" parent="Popup_download"]
@@ -86,5 +85,14 @@ margin_top = 8.0
 margin_right = -8.0
 margin_bottom = 28.0
 
+[node name="Button" type="Button" parent="Popup_download"]
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = -13.5
+margin_top = -20.0
+margin_right = 13.5
+text = "ok"
+
 [connection signal="buka_gui" from="dokumen" to="." method="_buat_gui"]
-[connection signal="confirmed" from="Popup_download" to="Popup_download" method="_on_Popup_confirmed"]
