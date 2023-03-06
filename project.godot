@@ -10,27 +10,13 @@ config_version=4
 
 [application]
 
-config/name="codeartstudio_site"
-run/main_scene="res://codeart/scene/main.tscn"
-boot_splash/show_image=false
-config/icon="res://codeart/icon.png"
-
-[compression]
-
-formats/zstd/long_distance_matching=true
-formats/zstd/compression_level=22
-formats/zstd/window_log_size=30
-formats/zlib/compression_level=9
-formats/gzip/compression_level=9
+config/name="codeartstudio"
+run/main_scene="res://codeartstudio/main.tscn"
+config/icon="res://codeartstudio/icon.png"
 
 [gui]
 
 common/drop_mouse_on_gui_input_disabled=true
-
-[input_devices]
-
-buffering/agile_event_flushing=true
-pointing/emulate_touch_from_mouse=true
 
 [physics]
 
@@ -38,8 +24,6 @@ common/enable_pause_aware_picking=true
 
 [rendering]
 
-threads/thread_model=2
-misc/lossless_compression/webp_compression_level=9
-misc/occlusion_culling/max_active_spheres=64
-misc/occlusion_culling/max_active_polygons=64
-environment/default_environment="res://codeart/default_env.tres"
+vram_compression/import_etc=true
+vram_compression/import_etc2=false
+environment/default_environment="res://codeartstudio/default_env.tres"
