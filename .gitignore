@@ -1,0 +1,6 @@
+﻿# Import cache
+*.import
+
+
+game/
+bin/win/data

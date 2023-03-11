@@ -1,6 +1,43 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://codeartstudio/icon.png" type="Texture" id=1]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends Button
+
+
+# Declare member variables here. Examples:
+# var a = 2
+# var b = \"text\"
+var path 
+export var game_forder : String
+export var game_http : String
+var nama : String
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	if !game_forder.empty() :
+		var x = game_forder.split(\"/\")
+		nama = x[x.size() - 1]
+		text = nama
+	if !game_http.empty() :
+		pass
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+#func _process(delta):
+#	pass
+
+func _on_Button_pressed():
+	if path.get_child_count() == 3 :
+		var v = path.get_child(2)
+		path.remove_child(v)
+		v.queue_free()
+	var node : Node = preload(\"res://codeartstudio/game_page.tscn\").instance()
+	node.name = nama
+	node.path = game_forder + \"/index.pck\"
+	path.add_child(node)
+	
+"
 
 [node name="Button" type="Button"]
 margin_right = 12.0
@@ -8,3 +45,6 @@ margin_bottom = 20.0
 text = "error"
 icon = ExtResource( 1 )
 flat = true
+script = SubResource( 1 )
+
+[connection signal="pressed" from="." to="." method="_on_Button_pressed"]
