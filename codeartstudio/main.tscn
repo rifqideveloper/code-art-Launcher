@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
 [sub_resource type="GDScript" id=3]
 script/source = "extends Control
@@ -17,10 +17,13 @@ var data : Dictionary = {
 	]
 }
 var game_dir : String = \"./\"
+const sha_link : String = \"https://rifqideveloper.github.io/code-art-Launcher/index.pck.sha256\"
+const pck_link : String = \"https://rifqideveloper.github.io/code-art-Launcher/index.pck\"
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	make_dir(\"game\")
-	if OS.has_feature(\"editor\") : 
+	#make_dir(\"game\")
+	if !OS.has_feature(\"editor\") : 
 		print(\"test\")
 		var f : File= File.new()
 		f.open(\"./data\",File.WRITE) 
@@ -31,6 +34,12 @@ func _ready():
 		f.close()
 		game_dir = data.get(\"game_dir\")
 		print(game_list())
+		f.open(\"bin/index.pck.sha256\",File.WRITE)
+		f.store_string(f.get_sha256(\"bin/index.pck\"))
+		f.close()
+	else :
+		$sha.request(sha_link) 
+		
 	
 	
 	
@@ -127,6 +136,20 @@ func _on_HTTPRequest_request_completed(result, response_code, headers, body):
 	$\"..\".game_list(v.get(\"game_dir\"))
 "
 
+[sub_resource type="GDScript" id=5]
+script/source = "extends HTTPRequest
+
+
+func _ready():
+	pass
+
+
+func _on_sha_request_completed(result, response_code, headers, body):
+	if true :
+		var v = File.new().get_sha256(\"./codeartstudio.pck\")
+		print(v)
+"
+
 [node name="main" type="Control"]
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -183,5 +206,11 @@ download_file = "res://data"
 use_threads = true
 script = SubResource( 4 )
 
+[node name="sha" type="HTTPRequest" parent="."]
+download_file = "sha256"
+use_threads = true
+script = SubResource( 5 )
+
 [connection signal="pressed" from="CenterContainer/VBoxContainer/google" to="CenterContainer/VBoxContainer/google" method="_on_google_pressed"]
 [connection signal="request_completed" from="HTTPRequest" to="HTTPRequest" method="_on_HTTPRequest_request_completed"]
+[connection signal="request_completed" from="sha" to="sha" method="_on_sha_request_completed"]

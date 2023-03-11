@@ -1,12 +1,14 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://codeartstudio/icon.png" type="Texture" id=1]
 
 [sub_resource type="GDScript" id=1]
 script/source = "extends Tabs
 var path : String 
+var link : String
 func _ready():
-	pass # Replace with function body.
+	$HTTPRequest.download_file = path
+	print(\"path \",$HTTPRequest.download_file)
 
 func _on_mainkan_pressed():
 	## up to date
@@ -14,8 +16,21 @@ func _on_mainkan_pressed():
 		if ProjectSettings.load_resource_pack(path,true) :
 			get_tree().change_scene(\"res://scene/main.tscn\")
 	else :
-		pass
+		$HTTPRequest.request(link)
+		
 	
+"
+
+[sub_resource type="GDScript" id=2]
+script/source = "extends HTTPRequest
+
+
+func _ready():
+	pass
+
+
+func _on_HTTPRequest_request_completed(result, response_code, headers, body):
+	pass # Replace with function body.
 "
 
 [node name="game_page" type="Tabs"]
@@ -88,4 +103,8 @@ awddaw
 "
 readonly = true
 
+[node name="HTTPRequest" type="HTTPRequest" parent="."]
+script = SubResource( 2 )
+
 [connection signal="pressed" from="ScrollContainer/VBoxContainer/TextureRect/mainkan" to="." method="_on_mainkan_pressed"]
+[connection signal="request_completed" from="HTTPRequest" to="HTTPRequest" method="_on_HTTPRequest_request_completed"]
