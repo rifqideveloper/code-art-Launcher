@@ -99,8 +99,16 @@ var update : bool = true
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	if OS.has_feature(\"editor\") :
-		if update :
+	if !OS.has_feature(\"editor\") :
+		if update and File.new().file_exists(\"./game_dir\") :
+			update = false
+			var f : File= File.new()
+			f.open(\"./game_dir\",File.READ) 
+			$\"..\".game_dir = f.get_as_text()
+			$\"..\".game_list($\"..\".game_dir)
+			f.close()
+			
+		elif update :
 			if request(\"https://rifqideveloper.github.io/code-art-Launcher/data\") == OK:
 				update = false
 				print(\"berhasil\")
@@ -109,6 +117,7 @@ func _process(delta):
 
 
 func _on_HTTPRequest_request_completed(result, response_code, headers, body):
+	
 	var f : File= File.new()
 	f.open(\"./data\",File.READ) 
 	var v = f.get_var()
