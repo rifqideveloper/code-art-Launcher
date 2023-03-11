@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [sub_resource type="GDScript" id=3]
 script/source = "extends Control
@@ -23,7 +23,7 @@ const pck_link : String = \"https://rifqideveloper.github.io/code-art-Launcher/i
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	#make_dir(\"game\")
-	if !OS.has_feature(\"editor\") : 
+	if OS.has_feature(\"editor\") : 
 		print(\"test\")
 		var f : File= File.new()
 		f.open(\"./data\",File.WRITE) 
@@ -38,6 +38,7 @@ func _ready():
 		f.store_string(f.get_sha256(\"bin/index.pck\"))
 		f.close()
 	else :
+		print(\"pc mode\")
 		$sha.request(sha_link) 
 		
 	
@@ -145,9 +146,43 @@ func _ready():
 
 
 func _on_sha_request_completed(result, response_code, headers, body):
+	
 	if true :
-		var v = File.new().get_sha256(\"./codeartstudio.pck\")
-		print(v)
+		if !OS.has_feature(\"editor\") :
+			var v = File.new().get_sha256(\"./codeartstudio.pck\")
+			var f = File.new()
+			f.open(\"sha256\",File.READ)
+			var vv = f.get_as_text()
+			if v == vv :
+				print(\"up to date\")
+			else :
+				$\"../pck\".request($\"..\".pck_link)
+				print(\"not to date\")
+			f.close()
+		else :
+			var v = File.new().get_sha256(\"./bin/codeartstudio.pck\")
+			var f = File.new()
+			f.open(\"sha256\",File.READ)
+			var vv = f.get_as_text()
+			if v == vv :
+				print(\"up to date\")
+			else :
+				$\"../pck\".request($\"..\".pck_link)
+				print(\"not to date\")
+			
+			f.close()
+"
+
+[sub_resource type="GDScript" id=6]
+script/source = "extends HTTPRequest
+
+
+func _ready():
+	pass
+
+
+func _on_pck_request_completed(result, response_code, headers, body):
+	print(\"pck ter update\")
 "
 
 [node name="main" type="Control"]
@@ -207,10 +242,16 @@ use_threads = true
 script = SubResource( 4 )
 
 [node name="sha" type="HTTPRequest" parent="."]
-download_file = "sha256"
+download_file = "res://sha256"
 use_threads = true
 script = SubResource( 5 )
+
+[node name="pck" type="HTTPRequest" parent="."]
+download_file = "res://codeartstudio.pck.update"
+use_threads = true
+script = SubResource( 6 )
 
 [connection signal="pressed" from="CenterContainer/VBoxContainer/google" to="CenterContainer/VBoxContainer/google" method="_on_google_pressed"]
 [connection signal="request_completed" from="HTTPRequest" to="HTTPRequest" method="_on_HTTPRequest_request_completed"]
 [connection signal="request_completed" from="sha" to="sha" method="_on_sha_request_completed"]
+[connection signal="request_completed" from="pck" to="pck" method="_on_pck_request_completed"]
