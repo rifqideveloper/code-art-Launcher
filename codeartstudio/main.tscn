@@ -8,7 +8,7 @@ script/source = "extends Control
 # var a = 2
 # var b = \"text\"
 var data : Dictionary = {
-	\"game_dir\":\"./\",
+	\"game_dir\":\"./game/\",
 	\"game_list\" : [
 		{
 			\"nama\":\"free person shooter\",
@@ -20,7 +20,7 @@ var game_dir : String = \"./\"
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	make_dir(\"game\")
-	if !OS.has_feature(\"editor\") : 
+	if OS.has_feature(\"editor\") : 
 		print(\"test\")
 		var f : File= File.new()
 		f.open(\"./data\",File.WRITE) 
@@ -101,20 +101,21 @@ var update : bool = true
 func _process(delta):
 	if OS.has_feature(\"editor\") :
 		if update :
-			if request(\"https://rifqideveloper.github.io/code-art-Launcher/data\") :
+			if request(\"https://rifqideveloper.github.io/code-art-Launcher/data\") == OK:
 				update = false
+				print(\"berhasil\")
 			
 	
 
 
 func _on_HTTPRequest_request_completed(result, response_code, headers, body):
-	print(\"berhasil\")
 	var f : File= File.new()
 	f.open(\"./data\",File.READ) 
-	var v : Dictionary = f.get_var()
+	var v = f.get_var()
 	$\"..\".game_dir = v.get(\"game_dir\")
+	print($\"..\".game_dir)
 	f.close()
-	$\"..\".game_list()
+	$\"..\".game_list(v.get(\"game_dir\"))
 "
 
 [node name="main" type="Control"]
