@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=8 format=2]
 
 [sub_resource type="GDScript" id=3]
 script/source = "extends Control
@@ -12,18 +12,29 @@ var data : Dictionary = {
 	\"game_list\" : [
 		{
 			\"nama\":\"free person shooter\",
-			\"offline\" : false
+			\"offline\" : false,
+			\"http\" : \"https://rifqideveloper.github.io/free-person-shooter/\"
 		}
 	]
 }
 var game_dir : String = \"./\"
-const sha_link : String = \"https://rifqideveloper.github.io/code-art-Launcher/index.pck.sha256\"
-const pck_link : String = \"https://rifqideveloper.github.io/code-art-Launcher/index.pck\"
+const sha_link : String = \"https://rifqideveloper.github.io/code-art-Launcher/\"
+const pck_link : String = \"https://rifqideveloper.github.io/code-art-Launcher/\"
+const bin_link_win : String = \"https://rifqideveloper.github.io/code-art-Launcher/win/codeartstudio.exe\"
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	#make_dir(\"game\")
-	if OS.has_feature(\"editor\") : 
+	if OS.has_feature(\"web\") :
+		print(\"mode web\")
+		var opsi : Node = preload(\"res://codeartstudio/game_opsi.tscn\").instance()
+		for i in data.get(\"game_list\") :
+			var v : Node = opsi.duplicate()
+			v.game_http = i.get(\"http\")
+			v.nama = i.get(\"nama\")
+			v.path = $TabContainer
+			$TabContainer/beranda/pilihan_game.add_child(v)
+	elif OS.has_feature(\"editor\") : 
 		print(\"test\")
 		var f : File= File.new()
 		f.open(\"./data\",File.WRITE) 
@@ -34,12 +45,36 @@ func _ready():
 		f.close()
 		game_dir = data.get(\"game_dir\")
 		print(game_list())
-		f.open(\"bin/index.pck.sha256\",File.WRITE)
-		f.store_string(f.get_sha256(\"bin/index.pck\"))
+		# auto update
+		f.open(\"bin/win/codeartstudio.pck.sha256\",File.WRITE)
+		f.store_string(f.get_sha256(\"bin/win/codeartstudio.pck\"))
 		f.close()
+		f.open(\"bin/win/codeartstudio.exe.sha256\",File.WRITE)
+		f.store_string(f.get_sha256(\"bin/win/codeartstudio.exe\"))
+		f.close()
+		f.open(\"bin/linux/codeartstudio.pck.sha256\",File.WRITE)
+		f.store_string(f.get_sha256(\"bin/linux/codeartstudio.pck\"))
+		f.close()
+		f.open(\"bin/linux/codeartstudio.x86_64.sha256\",File.WRITE)
+		f.store_string(f.get_sha256(\"bin/linux/codeartstudio.x86_64\"))
+		f.close()
+		f.open(\"bin/mac/codeartstudio.zip.sha256\",File.WRITE)
+		f.store_string(f.get_sha256(\"bin/mac/codeartstudio.zip\"))
+		f.close()
+		
+		# auto update
+		
+		if File.new().file_exists(\"codeartstudio.pck.update\") :
+			print(\"update tersedia\")
 	else :
-		print(\"pc mode\")
-		$sha.request(sha_link) 
+		#if File.new().file_exists(\"codeartstudio.pck.update\") :
+		#	get_tree().quit(12)
+		#elif File.new().file_exists(\"codeartstudio.exe.update\") :
+		#	get_tree().quit(12)
+		
+		if OS.has_feature(\"Windows\") :
+			print(\"pc mode == 'Windows'\")
+			$sha.request(sha_link + \"win/codeartstudio.exe.sha256\") 
 		
 	
 	
@@ -147,42 +182,82 @@ func _ready():
 
 func _on_sha_request_completed(result, response_code, headers, body):
 	
-	if true :
+	if result == OK :
 		if !OS.has_feature(\"editor\") :
 			var v = File.new().get_sha256(\"./codeartstudio.pck\")
 			var f = File.new()
 			f.open(\"sha256\",File.READ)
 			var vv = f.get_as_text()
-			if v == vv :
+			$\"../pck\".butuh_update = v != vv
+			if !$\"../pck\".butuh_update :
 				print(\"up to date\")
-			else :
-				$\"../pck\".request($\"..\".pck_link)
-				print(\"not to date\")
+			elif OS.has_feature(\"Windows\") : 
+				$\"../pck\".request($\"..\".pck_link + \"win/codeartstudio.exe.sha256\")
+				print(\"not up to date\")
 			f.close()
-		else :
-			var v = File.new().get_sha256(\"./bin/codeartstudio.pck\")
-			var f = File.new()
-			f.open(\"sha256\",File.READ)
-			var vv = f.get_as_text()
-			if v == vv :
-				print(\"up to date\")
-			else :
-				$\"../pck\".request($\"..\".pck_link)
-				print(\"not to date\")
-			
-			f.close()
+		#else :
+		#	var v = File.new().get_sha256(\"./bin/codeartstudio.pck\")
+		#	var f = File.new()
+		#	f.open(\"sha256\",File.READ)
+		#	var vv = f.get_as_text()
+		#	if v == vv :
+		#		print(\"up to date\")
+		#	else :
+		#		$\"../pck\".request($\"..\".pck_link)
+		#		print(\"not to date\")
+		#	
+		#	f.close()
 "
 
 [sub_resource type="GDScript" id=6]
 script/source = "extends HTTPRequest
+
+var butuh_update : bool = false 
+var sudah_update : bool = false
+func _ready():
+	#$\"../AcceptDialog\".visible = true
+	pass
+
+func _on_pck_request_completed(result, response_code, headers, body):
+	if result == OK :
+		print(\"pck ter update\")
+		sudah_update = true
+		if !$\"../bin\".butuh_update : 
+			if $\"../bin\".sudah_update :
+				$\"../AcceptDialog\".visible = true
+		else :
+			$\"../AcceptDialog\".visible = true
+			
+		
+		
+"
+
+[sub_resource type="GDScript" id=7]
+script/source = "extends HTTPRequest
+
+var butuh_update : bool = false 
+var sudah_update : bool = false
+func _ready():
+	if OS.has_feature(\"Windows\") :
+		download_file = \"codeartstudio.exe.update\"
+
+
+func _on_bin_request_completed(result, response_code, headers, body):
+	if result == OK :
+		print(\"binary ter update\")
+		sudah_update = true
+"
+
+[sub_resource type="GDScript" id=8]
+script/source = "extends AcceptDialog
 
 
 func _ready():
 	pass
 
 
-func _on_pck_request_completed(result, response_code, headers, body):
-	print(\"pck ter update\")
+func _on_AcceptDialog_confirmed():
+	get_tree().quit(12)
 "
 
 [node name="main" type="Control"]
@@ -251,7 +326,26 @@ download_file = "res://codeartstudio.pck.update"
 use_threads = true
 script = SubResource( 6 )
 
+[node name="bin" type="HTTPRequest" parent="."]
+script = SubResource( 7 )
+
+[node name="AcceptDialog" type="AcceptDialog" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -59.5
+margin_top = -29.0
+margin_right = 59.5
+margin_bottom = 29.0
+window_title = "Peringatan!"
+dialog_text = "update tersedia
+restart diperluakan "
+script = SubResource( 8 )
+
 [connection signal="pressed" from="CenterContainer/VBoxContainer/google" to="CenterContainer/VBoxContainer/google" method="_on_google_pressed"]
 [connection signal="request_completed" from="HTTPRequest" to="HTTPRequest" method="_on_HTTPRequest_request_completed"]
 [connection signal="request_completed" from="sha" to="sha" method="_on_sha_request_completed"]
 [connection signal="request_completed" from="pck" to="pck" method="_on_pck_request_completed"]
+[connection signal="request_completed" from="bin" to="bin" method="_on_bin_request_completed"]
+[connection signal="confirmed" from="AcceptDialog" to="AcceptDialog" method="_on_AcceptDialog_confirmed"]

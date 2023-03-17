@@ -15,6 +15,9 @@ export var game_http : String
 var nama : String
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	if OS.has_feature(\"web\") :
+		text = nama
+		return
 	if !game_forder.empty() :
 		var x = game_forder.split(\"/\")
 		nama = x[x.size() - 1]
@@ -28,6 +31,12 @@ func _ready():
 #	pass
 
 func _on_Button_pressed():
+	if OS.has_feature(\"web\") :
+		var node : Node = preload(\"res://codeartstudio/game_page.tscn\").instance()
+		node.name = nama
+		node.path = game_http
+		path.add_child(node)
+		return
 	if path.get_child_count() == 3 :
 		var v = path.get_child(2)
 		path.remove_child(v)

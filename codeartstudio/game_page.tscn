@@ -7,14 +7,21 @@ script/source = "extends Tabs
 var path : String 
 var link : String
 func _ready():
-	$HTTPRequest.download_file = path
-	print(\"path \",$HTTPRequest.download_file)
+	if !OS.has_feature(\"web\") :
+		$HTTPRequest.download_file = path
+		print(\"path \",$HTTPRequest.download_file)
 
 func _on_mainkan_pressed():
 	## up to date
-	if true :
+	if OS.has_feature(\"web\") : 
+		
+		OS.shell_open(path)
+	elif true :
+		print(\"membuka app\")
 		if ProjectSettings.load_resource_pack(path,true) :
 			get_tree().change_scene(\"res://scene/main.tscn\")
+		else :
+			print_debug(\"error tidak dapat membuka pck file\")
 	else :
 		$HTTPRequest.request(link)
 		
