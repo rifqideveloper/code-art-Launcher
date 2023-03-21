@@ -14,7 +14,6 @@ func _ready():
 func _on_mainkan_pressed():
 	## up to date
 	if OS.has_feature(\"web\") : 
-		
 		OS.shell_open(path)
 	elif true :
 		print(\"membuka app\")

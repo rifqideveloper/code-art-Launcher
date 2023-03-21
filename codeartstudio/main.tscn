@@ -13,38 +13,31 @@ var data : Dictionary = {
 		{
 			\"nama\":\"free person shooter\",
 			\"offline\" : false,
-			\"http\" : \"https://rifqideveloper.github.io/free-person-shooter/\"
+			\"http\" : \"https://rifqideveloper.github.io/free-person-shooter/\",
+			\"app\" : \"free person shooter.pck\"
+			
 		}
 	]
 }
-var game_dir : String = \"./\"
+#var game_dir : String = \"./\"
 const sha_link : String = \"https://rifqideveloper.github.io/code-art-Launcher/\"
 const pck_link : String = \"https://rifqideveloper.github.io/code-art-Launcher/\"
 const bin_link_win : String = \"https://rifqideveloper.github.io/code-art-Launcher/win/codeartstudio.exe\"
-
+var opsi : Node = preload(\"res://codeartstudio/game_opsi.tscn\").instance()
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	#make_dir(\"game\")
-	if OS.has_feature(\"web\") :
-		print(\"mode web\")
-		var opsi : Node = preload(\"res://codeartstudio/game_opsi.tscn\").instance()
-		for i in data.get(\"game_list\") :
-			var v : Node = opsi.duplicate()
-			v.game_http = i.get(\"http\")
-			v.nama = i.get(\"nama\")
-			v.path = $TabContainer
-			$TabContainer/beranda/pilihan_game.add_child(v)
-	elif OS.has_feature(\"editor\") : 
+	if OS.has_feature(\"editor\") and false: 
 		print(\"test\")
 		var f : File= File.new()
-		f.open(\"./data\",File.WRITE) 
-		f.store_var(data)
-		f.close()
-		f.open(\"./bin/data\",File.WRITE) 
-		f.store_var(data)
-		f.close()
-		game_dir = data.get(\"game_dir\")
-		print(game_list())
+		#f.open(\"./data\",File.WRITE) 
+		#f.store_var(data)
+		#f.close()
+		#f.open(\"./bin/data\",File.WRITE) 
+		#f.store_var(data)
+		#f.close()
+		#game_dir = data.get(\"game_dir\")
+		#print(game_list())
 		# auto update
 		f.open(\"bin/win/codeartstudio.pck.sha256\",File.WRITE)
 		f.store_string(f.get_sha256(\"bin/win/codeartstudio.pck\"))
@@ -61,20 +54,45 @@ func _ready():
 		f.open(\"bin/mac/codeartstudio.zip.sha256\",File.WRITE)
 		f.store_string(f.get_sha256(\"bin/mac/codeartstudio.zip\"))
 		f.close()
-		
 		# auto update
+		#if File.new().file_exists(\"codeartstudio.pck.update\") :
+		#	print(\"update tersedia\")
+	elif OS.has_feature(\"web\") :
+		print(\"mode web\")
 		
-		if File.new().file_exists(\"codeartstudio.pck.update\") :
-			print(\"update tersedia\")
+		for i in data.get(\"game_list\") :
+			var v : Node = opsi.duplicate()
+			v.game_http = i.get(\"http\")
+			v.nama = i.get(\"nama\")
+			v.path = $TabContainer
+			$TabContainer/beranda/pilihan_game.add_child(v)
 	else :
 		#if File.new().file_exists(\"codeartstudio.pck.update\") :
 		#	get_tree().quit(12)
 		#elif File.new().file_exists(\"codeartstudio.exe.update\") :
 		#	get_tree().quit(12)
-		
+		if File.new().file_exists(\"dirgame\") :
+			var f : File = File.new()
+			f.open_compressed(\"dirgame\",File.READ,File.COMPRESSION_FASTLZ)
+			data.game_dir = f.get_as_text()
+			f.close()
+		else :
+			var f : File = File.new()
+			f.open_compressed(\"dirgame\",File.WRITE,File.COMPRESSION_FASTLZ)
+			f.store_string(data.get(\"game_dir\"))
+			f.close()
+			
 		if OS.has_feature(\"Windows\") :
 			print(\"pc mode == 'Windows'\")
-			$sha.request(sha_link + \"win/codeartstudio.exe.sha256\") 
+			for i in data.get(\"game_list\") :
+				var v : Node = opsi.duplicate()
+				v.text = i.get(\"nama\")
+				v.data = i
+				v.tab = $TabContainer
+				v.dir = data.get(\"game_dir\")
+				$TabContainer/beranda/pilihan_game.add_child(v)
+			#$sha.request(sha_link + \"win/codeartstudio.exe.sha256\") 
+			
 		
 	
 	
@@ -101,7 +119,7 @@ func game_list(game:String = \"./game/\") -> Array :
 	
 func make_dir (nama:String) :
 	var f : Directory =Directory.new()
-	f.open(game_dir)
+	f.open(data.get(\"game_dir\"))
 	f.make_dir_recursive(nama)
 
 

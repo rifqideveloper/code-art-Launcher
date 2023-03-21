@@ -9,42 +9,58 @@ script/source = "extends Button
 # Declare member variables here. Examples:
 # var a = 2
 # var b = \"text\"
-var path 
-export var game_forder : String
-export var game_http : String
-var nama : String
+var data : Dictionary
+var tab 
+var dir : String
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	if OS.has_feature(\"web\") :
-		text = nama
-		return
-	if !game_forder.empty() :
-		var x = game_forder.split(\"/\")
-		nama = x[x.size() - 1]
-		text = nama
-	if !game_http.empty() :
-		pass
-
+	#if OS.has_feature(\"web\") :
+	#	text = nama
+	#	return
+	#if !game_forder.empty() :
+	#	var x = game_forder.split(\"/\")
+	#	nama = x[x.size() - 1]
+	#	text = nama
+	#if !game_http.empty() :
+	#	pass
+	pass
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):
 #	pass
 
 func _on_Button_pressed():
-	if OS.has_feature(\"web\") :
-		var node : Node = preload(\"res://codeartstudio/game_page.tscn\").instance()
-		node.name = nama
-		node.path = game_http
-		path.add_child(node)
-		return
-	if path.get_child_count() == 3 :
-		var v = path.get_child(2)
-		path.remove_child(v)
-		v.queue_free()
 	var node : Node = preload(\"res://codeartstudio/game_page.tscn\").instance()
-	node.name = nama
-	node.path = game_forder + \"/index.pck\"
-	path.add_child(node)
+	node.name = data.get(\"nama\")
+	if OS.has_feature(\"web\") :
+		node.path = data.get(\"http\") + \"index.pck\"
+	else :
+		node.link = data.get(\"http\") + \"index.pck\"
+		node.path = dir + text + \"/\"+ text +\".pck\"
+		
+	if tab.get_child_count() == 3 :
+		var v = tab.get_child(2)
+		tab.remove_child(v)
+		v.queue_free()
+	tab.add_child(node)
+	
+	tab.current_tab = 2
+	
+	pass
+	#	var node : Node = preload(\"res://codeartstudio/game_page.tscn\").instance()
+	#	node.name = nama
+	#	node.path = game_http
+	#	path.add_child(node)
+	#	return
+	#if path.get_child_count() == 3 :
+	#	var v = path.get_child(2)
+	#	path.remove_child(v)
+	#	v.queue_free()
+	#var node : Node = preload(\"res://codeartstudio/game_page.tscn\").instance()
+	#node.name = nama
+	#node.path = game_forder + \"/index.pck\"
+	#path.add_child(node)
+	pass
 	
 "
 
